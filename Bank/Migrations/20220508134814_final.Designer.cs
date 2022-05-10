@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Bank.Migrations
 {
-    [DbContext(typeof(MVCContext))]
+    [DbContext(typeof(Context.MVCContext))]
     [Migration("20220508134814_final")]
     partial class final
     {

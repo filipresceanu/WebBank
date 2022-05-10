@@ -4,7 +4,7 @@ namespace Bank.Context
 {
     public class MVCContext:DbContext
     {
-        public MVCContext(DbContextOptions options) : base(options)
+        public MVCContext(DbContextOptions<MVCContext> options) : base(options)
         {
 
         }
