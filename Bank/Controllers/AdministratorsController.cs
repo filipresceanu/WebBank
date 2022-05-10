@@ -8,73 +8,73 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Bank.Context;
 using Bank.Models;
+using Bank.Services.Interfaces;
 
 namespace Bank.Controllers
 {
     public class AdministratorsController : Controller
     {
-        private readonly MVCContext _context;
+        private readonly IAdministratorService _administratorService;
 
-        public AdministratorsController(MVCContext context)
+        public AdministratorsController(IAdministratorService administratorService)
         {
-            _context = context;
+            _administratorService = administratorService;
         }
 
-        // GET: Administrators
-        public async Task<IActionResult> Index()
+        // GET: AdministratorController
+        public ActionResult Index()
         {
-            return View(await _context.Administrators.ToListAsync());
+            var administrators = _administratorService.GetAdministrator();
+            return View(administrators);
         }
 
-        // GET: Administrators/Details/5
-        public async Task<IActionResult> Details(int? id)
+        // GET: AdministratorController/Details/5
+        public ActionResult Details(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var administrator = await _context.Administrators
-                .FirstOrDefaultAsync(m => m.AdministratorID == id);
-            if (administrator == null)
+            var administrators =_administratorService.GetAdministrator().FirstOrDefault(m=>m.AdministratorID == id);
+            if (administrators == null)
             {
                 return NotFound();
             }
 
-            return View(administrator);
+            return View(administrators);
         }
 
         // GET: Administrators/Create
-        public IActionResult Create()
+        public ActionResult Create()
         {
             return View();
         }
 
-        // POST: Administrators/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: AdministratorController/Create
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("AdministratorID,AdministratorName,Password")] Administrator administrator)
+        public ActionResult Create([Bind("AdministratorID,AdministratorName,Password")] Administrator administrator)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(administrator);
-                await _context.SaveChangesAsync();
+                _administratorService.AddAdministrator(administrator);
+                _administratorService.Save();
                 return RedirectToAction(nameof(Index));
             }
             return View(administrator);
         }
 
-        // GET: Administrators/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        // GET: AdministratorController/Edit/5
+        public ActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var administrator = await _context.Administrators.FindAsync(id);
+            var administrator = _administratorService.GetAdministrator().FirstOrDefault(a => a.AdministratorID == id);
             if (administrator == null)
             {
                 return NotFound();
@@ -82,12 +82,11 @@ namespace Bank.Controllers
             return View(administrator);
         }
 
-        // POST: Administrators/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: AdministratorController/Edit/5
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("AdministratorID,AdministratorName,Password")] Administrator administrator)
+        public  ActionResult Edit(int id, [Bind("AdministratorID,AdministratorName,Password")] Administrator administrator)
         {
             if (id != administrator.AdministratorID)
             {
@@ -96,37 +95,23 @@ namespace Bank.Controllers
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(administrator);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!AdministratorExists(administrator.AdministratorID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+               _administratorService.UpdateAdministrator(administrator);
+                _administratorService.Save();
+
                 return RedirectToAction(nameof(Index));
             }
             return View(administrator);
         }
 
-        // GET: Administrators/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        // GET: AdministratorController/Delete/5
+        public ActionResult Delete(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var administrator = await _context.Administrators
-                .FirstOrDefaultAsync(m => m.AdministratorID == id);
+            var administrator =  _administratorService.GetAdministrator().FirstOrDefault(m => m.AdministratorID == id);
             if (administrator == null)
             {
                 return NotFound();
@@ -135,20 +120,17 @@ namespace Bank.Controllers
             return View(administrator);
         }
 
-        // POST: Administrators/Delete/5
+        // POST: AdministratorController/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public ActionResult DeleteConfirmed(int id)
         {
-            var administrator = await _context.Administrators.FindAsync(id);
-            _context.Administrators.Remove(administrator);
-            await _context.SaveChangesAsync();
+            var administrator =  _administratorService.GetAdministrator().FirstOrDefault(a=>a.AdministratorID==id);
+            _administratorService.DeleteAdministrator(administrator);
+            _administratorService.Save();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool AdministratorExists(int id)
-        {
-            return _context.Administrators.Any(e => e.AdministratorID == id);
-        }
+       
     }
 }

@@ -1,0 +1,59 @@
+﻿@model IEnumerable<Bank.Models.AccountType>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RetreatPercentage)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DepositPercentage)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RetreatFixSume)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DepositFixSume)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RetreatPercentage)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DepositPercentage)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RetreatFixSume)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DepositFixSume)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.AccountTypeId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.AccountTypeId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.AccountTypeId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
